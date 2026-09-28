@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profil Saya | Interactive Storytelling</title>
+  
+  <style>
+    /* ==========================================
+       1. RESET & CSS VARIABLES
+       ========================================== */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    }
+
+    body {
+      background-color: #090d16; /* Cyberpunk Dark */
+      color: #f8fafc;
+      overflow-x: hidden;
+    }
+
+    /* Background Interaktif */
+    #bg-interactive {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: radial-gradient(circle at 50% 50%, rgba(56, 189, 248, 0.12), transparent 60%);
+      z-index: -1;
+      pointer-events: none;
+    }
+
+    /* ==========================================
+       2. HERO SECTION LAYOUT
+       ========================================== */
+    .hero-section {
+      position: relative;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 40px 20px;
+    }
+
+    .hero-container {
+      max-width: 1100px;
+      width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 50px;
+    }
+
+    .hero-content {
+      flex: 1;
+    }
+
+    /* Status Badge */
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(56, 189, 248, 0.2);
+      padding: 6px 16px;
+      border-radius: 20px;
+      font-size: 0.85rem;
+      margin-bottom: 20px;
+    }
+
+    .pulse-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #22c55e;
+      border-radius: 50%;
+      box-shadow: 0 0 8px #22c55e;
+    }
+
+    /* Typografi */
+    .story-subtitle {
+      color: #38bdf8;
+      font-weight: 600;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+      font-size: 0.95rem;
+    }
+
+    .hero-title {
+      font-size: 2.8rem;
+      line-height: 1.2;
+      margin-bottom: 18px;
+    }
+
+    .highlight {
+      color: #38bdf8;
+      text-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    }
+
+    .typing-text {
+      color: #a855f7;
+      border-right: 2px solid #a855f7;
+      white-space: nowrap;
+    }
+
+    .hero-description {
+      color: #94a3b8;
+      font-size: 1.05rem;
+      margin-bottom: 30px;
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
+    /* Tombol CTA */
+    .hero-cta {
+      display: flex;
+      gap: 15px;
+    }
+
+    .btn {
+      padding: 12px 26px;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background: #38bdf8;
+      color: #090d16;
+      box-shadow: 0 0 15px rgba(56, 189, 248, 0.3);
+    }
+
+    .btn-primary:hover {
+      background: #0284c7;
+      transform: translateY(-3px);
+      box-shadow: 0 0 25px rgba(56, 189, 248, 0.6);
+    }
+
+    .btn-secondary {
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      color: #fff;
+      background: rgba(255, 255, 255, 0.03);
+    }
+
+    .btn-secondary:hover {
+      background: rgba(255, 255, 255, 0.1);
+      transform: translateY(-3px);
+    }
+
+    /* ==========================================
+       3. AVATAR & FLOATING BADGES
+       ========================================== */
+    .hero-avatar-wrapper {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .avatar-frame {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      padding: 5px;
+      background: linear-gradient(135deg, #38bdf8, #a855f7);
+      box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+      position: relative;
+      z-index: 2;
+    }
+
+    .avatar-img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 50%;
+      background-color: #1e293b;
+    }
+
+    /* Floating Badges */
+    .floating-badge {
+      position: absolute;
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+      color: #f8fafc;
+      padding: 8px 16px;
+      border-radius: 30px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+      z-index: 3;
+      white-space: nowrap;
+      transition: transform 0.3s ease;
+    }
+
+    .floating-badge:hover {
+      transform: scale(1.1);
+      border-color: #a855f7;
+      box-shadow: 0 0 15px rgba(168, 85, 247, 0.5);
+    }
+
+    .badge-1 {
+      top: 10px;
+      left: -40px;
+      animation: floatRandom1 6s ease-in-out infinite;
+    }
+
+    .badge-2 {
+      bottom: 20px;
+      left: -30px;
+      animation: floatRandom2 7s ease-in-out infinite;
+    }
+
+    .badge-3 {
+      top: 50%;
+      right: -50px;
+      animation: floatRandom3 5s ease-in-out infinite;
+    }
+
+    /* Keyframes Melayang Acak (Naik-Turun & Kanan-Kiri) */
+    @keyframes floatRandom1 {
+      0% { transform: translate(0, 0); }
+      25% { transform: translate(12px, -15px); }
+      50% { transform: translate(-8px, 10px); }
+      75% { transform: translate(-15px, -8px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes floatRandom2 {
+      0% { transform: translate(0, 0); }
+      33% { transform: translate(-15px, 12px); }
+      66% { transform: translate(10px, -10px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    @keyframes floatRandom3 {
+      0% { transform: translate(0, 0); }
+      50% { transform: translate(15px, 15px); }
+      100% { transform: translate(0, 0); }
+    }
+
+    /* Scroll Indicator */
+    .scroll-indicator {
+      position: absolute;
+      bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.8rem;
+      color: #64748b;
+    }
+
+    /* Responsive untuk Mobile */
+    @media (max-width: 768px) {
+      .hero-container {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 30px;
+      }
+
+      .hero-description {
+        margin: 0 auto 25px auto;
+      }
+
+      .hero-cta {
+        justify-content: center;
+      }
+
+      .avatar-frame {
+        width: 200px;
+        height: 200px;
+      }
+
+      .badge-1 { left: -10px; top: -10px; }
+      .badge-3 { right: -10px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Canvas/Gradient -->
+  <div id="bg-interactive"></div>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="hero-container">
+      
+      <!-- Sisi Kiri: Teks & Storytelling -->
+      <div class="hero-content">
+        <div class="status-badge">
+          <span class="pulse-dot"></span> Open for Opportunities
+        </div>
+        
+        <p class="story-subtitle">Setiap karya punya cerita. Cerita saya dimulai di sini.</p>
+        
+        <h1 class="hero-title">
+          Halo, saya <span class="highlight">[Nama Anda]</span><br>
+          <span class="typing-text"></span>
+        </h1>
+
+        <p class="hero-description">
+          Selamat datang di ruang portofolio saya. Di sini Anda dapat menjelajahi perjalanan, karya, dan keahlian yang telah saya bangun sejauh ini.
+        </p>
+
+        <div class="hero-cta">
+          <a href="#about" class="btn btn-primary">Mulai Petualangan ↓</a>
+          <a href="#contact" class="btn btn-secondary">Mari Berdiskusi</a>
+        </div>
+      </div>
+
+      <!-- Sisi Kanan: Frame Foto Profil + Floating Badges -->
+      <div class="hero-avatar-wrapper">
+        
+        <!-- Frame Foto -->
+        <div class="avatar-frame">
+          <!-- Ganti 'profile.jpg' dengan nama file foto kamu jika ada di folder yang sama -->
+          <img src="profile.jpg" alt="Foto Profil" class="avatar-img" onerror="this.src='https://via.placeholder.com/300x300/1e293b/38bdf8?text=Foto+Profil'">
+        </div>
+
+        <!-- Floating Badges -->
+        <div class="floating-badge badge-1">
+          <span>🪂</span> Based in Indonesia
+        </div>
+
+        <div class="floating-badge badge-2">
+          <span>💻</span> Web Enthusiast
+        </div>
+
+        <div class="floating-badge badge-3">
+          <span>☕</span> Powered by Coffee
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- Indicator Scroll -->
+    <div class="scroll-indicator">
+      <span>Scroll Kebawah</span>
+    </div>
+  </section>
+
+  <!-- ==========================================
+     4. JAVASCRIPT LOGIC
+     ========================================== -->
+  <script>
+    // Typing Effect
+    const roles = ["Seorang Web Developer.", "Seorang Creative Thinker.", "Seorang Problem Solver."];
+    let roleIndex = 0;
+    let charIndex = 0;
+    let isDeleting = false;
+    const typingElement = document.querySelector(".typing-text");
+
+    function typeEffect() {
+      const currentRole = roles[roleIndex];
+      
+      if (isDeleting) {
+        typingElement.textContent = currentRole.substring(0, charIndex - 1);
+        charIndex--;
+      } else {
+        typingElement.textContent = currentRole.substring(0, charIndex + 1);
+        charIndex++;
+      }
+
+      let typingSpeed = isDeleting ? 40 : 80;
+
+      if (!isDeleting && charIndex === currentRole.length) {
+        typingSpeed = 2000;
+        isDeleting = true;
+      } else if (isDeleting && charIndex === 0) {
+        isDeleting = false;
+        roleIndex = (roleIndex + 1) % roles.length;
+        typingSpeed = 400;
+      }
+
+      setTimeout(typeEffect, typingSpeed);
+    }
+
+    // Interactive Mouse Gradient Background
+    document.addEventListener("mousemove", (e) => {
+      const bg = document.getElementById("bg-interactive");
+      const x = (e.clientX / window.innerWidth) * 100;
+      const y = (e.clientY / window.innerHeight) * 100;
+      bg.style.background = `radial-gradient(circle at ${x}% ${y}%, rgba(56, 189, 248, 0.18), transparent 50%)`;
+    });
+
+    // Jalankan fungsi saat DOM siap
+    document.addEventListener("DOMContentLoaded", typeEffect);
+  </script>
+</body>
+</html>
